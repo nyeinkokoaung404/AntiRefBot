@@ -2,7 +2,7 @@ import telebot
 from telebot.types import ChatPermissions
 
 # Initialize the bot with your token
-bot = telebot.TeleBot("7292124945:AAE8cXZ4Tmk0ANW0RC6hI_R7IrWNZYVtpzQ")
+bot = telebot.TeleBot("6993500514:AAEQjZG8x6LpXE7QrJanFcOix5vvDZeTnP8")
 
 # Remove any existing webhooks
 bot.remove_webhook()
