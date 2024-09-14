@@ -23,7 +23,7 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/victorgeel/AntiRefBot/blob/main/AntiRefbot\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/nyeinkokoaung404/AntiRefBot/blob/main/AntiRefbot\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
     },
     {
@@ -34,7 +34,7 @@
       },
       "outputs": [],
       "source": [
-        "!git clone https://github.com/vvvgeek/AntiRefBot\n",
+        "!git clone https://github.com/nyeinkokoaung404/AntiRefBot\n",
         "%cd /content/AntiRefBot"
       ]
     },
@@ -71,7 +71,7 @@
         "from pyngrok import ngrok  # Import pyngrok to handle ngrok setup\n",
         "\n",
         "# Set up the Telegram bot\n",
-        "API_KEY = '7292124945:AAE8cXZ4Tmk0ANW0RC6hI_R7IrWNZYVtpzQ'  # Replace with your Telegram API key\n",
+        "API_KEY = '6993500514:AAEQjZG8x6LpXE7QrJanFcOix5vvDZeTnP8'  # Replace with your Telegram API key\n",
         "bot = telebot.TeleBot(API_KEY)\n",
         "\n",
         "# Set up the Flask app\n",
@@ -92,7 +92,7 @@
         "    return \"Bot is running!\"\n",
         "\n",
         "# Step 1: Connect ngrok with your token\n",
-        "ngrok.set_auth_token(\"2ldPp0d7xqgKxgdsGGTxbEIHQCp_DA1185oAmS5v4fWMmCtH\")  # Replace with your ngrok token\n",
+        "ngrok.set_auth_token(\"2m4pXFhTevRVSy0AzvNKB3VjHjp_2d6WPnfAS9oNXtUmC7sRs\")  # Replace with your ngrok token\n",
         "\n",
         "# Step 2: Create a public URL for your Flask app\n",
         "public_url = ngrok.connect(5000)\n",
