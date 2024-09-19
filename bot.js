@@ -1,101 +1,104 @@
-/**
- * https://github.com/cvzi/telegram-bot-cloudflare
- */
-
-const TOKEN = ENV_BOT_TOKEN // Get it from @BotFather https://core.telegram.org/bots#6-botfather
-const WEBHOOK = '/endpoint'
-const SECRET = ENV_BOT_SECRET // A-Z, a-z, 0-9, _ and -
-
-/**
- * Wait for requests to the worker
- */
 addEventListener('fetch', event => {
-  const url = new URL(event.request.url)
-  if (url.pathname === WEBHOOK) {
-    event.respondWith(handleWebhook(event))
-  } else if (url.pathname === '/registerWebhook') {
-    event.respondWith(registerWebhook(event, url, WEBHOOK, SECRET))
-  } else if (url.pathname === '/unRegisterWebhook') {
-    event.respondWith(unRegisterWebhook(event))
-  } else {
-    event.respondWith(new Response('No handler for this request'))
+  event.respondWith(handleRequest(event.request));
+});
+
+const TOKEN = "6993500514:AAEQjZG8x6LpXE7QrJanFcOix5vvDZeTnP8";
+const TELEGRAM_API_URL = `https://api.telegram.org/bot${TOKEN}`;
+const REFERRAL_KEYWORDS = ["ref", "joinchat", "invite", "claim", "airdrop", "t.me"];
+
+async function callTelegramApi(method, body) {
+  const url = `${TELEGRAM_API_URL}/${method}`;
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  };
+  const response = await fetch(url, options);
+  
+  // Log the response status and body for debugging
+  const responseBody = await response.json();
+  if (!response.ok) {
+    console.error(`Error calling Telegram API (${method}): ${responseBody.description}`);
   }
-})
-
-/**
- * Handle requests to WEBHOOK
- * https://core.telegram.org/bots/api#update
- */
-async function handleWebhook (event) {
-  // Check secret
-  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== SECRET) {
-    return new Response('Unauthorized', { status: 403 })
-  }
-
-  // Read request body synchronously
-  const update = await event.request.json()
-  // Deal with response asynchronously
-  event.waitUntil(onUpdate(update))
-
-  return new Response('Ok')
+  return response;
 }
 
-/**
- * Handle incoming Update
- * https://core.telegram.org/bots/api#update
- */
-async function onUpdate (update) {
-  if ('message' in update) {
-    await onMessage(update.message)
-  }
-}
-
-/**
- * Handle incoming Message
- * https://core.telegram.org/bots/api#message
- */
-function onMessage (message) {
-  return sendPlainText(message.chat.id, 'Echo:\n' + message.text)
-}
-
-/**
- * Send plain text message
- * https://core.telegram.org/bots/api#sendmessage
- */
-async function sendPlainText (chatId, text) {
-  return (await fetch(apiUrl('sendMessage', {
+async function muteUser(chatId, userId) {
+  const chatPermissions = { can_send_messages: false };
+  await callTelegramApi('restrictChatMember', {
     chat_id: chatId,
-    text
-  }))).json()
+    user_id: userId,
+    permissions: chatPermissions
+  });
+
+  await callTelegramApi('sendMessage', {
+    chat_id: chatId,
+    text: `စောက်တောသား ${userId} ကို လက်ယားမှုအတွက် Group ထဲကနေ ခွေးလို ကန်ထုတ်လိုက်ပါပြီ‌ဗျို..! အဆင်ပြေရင်လက်ခုတ်သံလေးတွေ ကြားချင်ပါတယ် 😅😅😅`
+  });
 }
 
-/**
- * Set webhook to this worker's url
- * https://core.telegram.org/bots/api#setwebhook
- */
-async function registerWebhook (event, requestUrl, suffix, secret) {
-  // https://core.telegram.org/bots/api#setwebhook
-  const webhookUrl = `${requestUrl.protocol}//${requestUrl.hostname}${suffix}`
-  const r = await (await fetch(apiUrl('setWebhook', { url: webhookUrl, secret_token: secret }))).json()
-  return new Response('ok' in r && r.ok ? 'Ok' : JSON.stringify(r, null, 2))
-}
+async function handleCommand(message) {
+  const chatId = message.chat.id;
+  const messageText = message.text;
 
-/**
- * Remove webhook
- * https://core.telegram.org/bots/api#setwebhook
- */
-async function unRegisterWebhook (event) {
-  const r = await (await fetch(apiUrl('setWebhook', { url: '' }))).json()
-  return new Response('ok' in r && r.ok ? 'Ok' : JSON.stringify(r, null, 2))
-}
-
-/**
- * Return url to telegram api, optionally with parameters added
- */
-function apiUrl (methodName, params = null) {
-  let query = ''
-  if (params) {
-    query = '?' + new URLSearchParams(params).toString()
+  if (messageText.startsWith('/help')) {
+    const helpMessage = `/psi\nPsiphon termux cmd ယူရန်....\n\n/freecfg\nFree Vpn Config များအတွက် termux tool cmd ရယူရန်....\n\n/bugsni\nBug နှင့် Sni ရှာနိုင်တဲ့ termux tool cmd ရယူရန်....`;
+    await callTelegramApi('sendMessage', {
+      chat_id: chatId,
+      text: helpMessage
+    });
+  } else if (messageText.startsWith('/psi')) {
+    const psiMessage = `**•Psiphon pro for Android Termux•**\n\n\`\`\`python\npkg update\n\npkg upgrade -y\n\npkg install git\n\npkg install golang\n\ngit clone https://github.com/victorgeel/Yes.git\n\ncd Yes\n\nchmod +x *\n\n./yes\`\`\`\n\n**Socks proxy 127.0.0.1:3080**`;
+    await callTelegramApi('sendMessage', {
+      chat_id: chatId,
+      text: psiMessage,
+      parse_mode: 'Markdown'
+    });
+  } else if (messageText.startsWith('/freecfg')) {
+    const freecfgMessage = `**•Free Vpn Config ယူရန် cmd•**\n\n\`\`\`python\npkg update \n\npkg upgrade\n\ngit clone https://github.com/victorgeel/FreeVpn.git\n\ncd FreeVpn\n\nbash Sel.sh\`\`\`\n\n**•နံပါတ် 99 ရိုက်ပြီး script Install ပါ။**\n**•ကျန်အဆင့်များကို နံပါတ်စဉ်အတိုင်းဖတ်ပြီးဆက်လက်လုပ်ဆောင်ပါ။**`;
+    await callTelegramApi('sendMessage', {
+      chat_id: chatId,
+      text: freecfgMessage,
+      parse_mode: 'Markdown'
+    });
+  } else if (messageText.startsWith('/bugsni')) {
+    const bugsniMessage = `**•Bug Sni Finder အတွက် cmd•**\n\n\`\`\`python\npkg update && pkg upgrade -y\n\npkg install golang\n\n\ngit clone https://github.com/victorgeel/Sub-BugSNI.git\n\ncd Sub-BugSNI\n\nchmod +x *\n\npip3 install -r requirements.txt\n\npython3 run.py\`\`\``;
+    await callTelegramApi('sendMessage', {
+      chat_id: chatId,
+      text: bugsniMessage,
+      parse_mode: 'Markdown'
+    });
+  } else {
+    const welcomeMessage = "မင်္ဂလာပါ ! တောသားတွေ ဂျင်းကောင်တွေကို နှိမ်နင်းပေးတဲ့ သခင်ကြီးပါ ! 🩵4-0-4 Myanmar Group က ကြိုဆိုပါတယ်💙 !";
+    await callTelegramApi('sendMessage', {
+      chat_id: chatId,
+      text: welcomeMessage
+    });
   }
-  return `https://api.telegram.org/bot${TOKEN}/${methodName}${query}`
+}
+
+async function checkMessage(message) {
+  const messageText = message.text.toLowerCase();
+  if (REFERRAL_KEYWORDS.some(keyword => messageText.includes(keyword))) {
+    await muteUser(message.chat.id, message.from.id);
+  }
+}
+
+async function handleRequest(request) {
+  if (request.method === 'POST') {
+    try {
+      const { message } = await request.json();
+      if (message && message.chat && message.from) {
+        if (message.text) {
+          await handleCommand(message);
+          await checkMessage(message);
+        }
+      }
+      return new Response('OK', { status: 200 });
+    } catch (error) {
+      console.error('Error handling request:', error);
+      return new Response('Error', { status: 500 });
+    }
+  }
+  return new Response('Invalid request', { status: 400 });
 }
