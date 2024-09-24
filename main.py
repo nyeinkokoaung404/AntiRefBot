@@ -2,7 +2,7 @@ import telebot
 from telebot.types import ChatPermissions
 
 # Initialize the bot with your token
-bot = telebot.TeleBot("6993500514:AAEQjZG8x6LpXE7QrJanFcOix5vvDZeTnP8")
+bot = telebot.TeleBot("6993500514:AAEBryu-rDgD4DPkSncDnTsuSJ-JwR3pAcY")
 
 # Remove any existing webhooks
 bot.remove_webhook()
@@ -13,7 +13,7 @@ REFERRAL_KEYWORDS = ["ref", "joinchat", "invite", "t.me"]
 # Function to mute the user
 def mute_user(chat_id, user_id):
     bot.restrict_chat_member(chat_id, user_id, ChatPermissions(can_send_messages=False))
-    bot.send_message(chat_id, f"စောက်ဝာာသား {user_id} လက်ယားမှုအတွက် Group ထဲကနေ ခွေးလို ကန်ထုတ်လ်ုက်ပြီ.")
+    bot.send_message(chat_id, f"စောက်ဝာာသား {user_id} လက်ယားမှုအတွက် Group ထဲကနေ ခွေးလို ကန်ထုတ်လိုက်ပြီ.")
 
 # Handle the /start and /help commands
 @bot.message_handler(commands=['start', 'help'])
