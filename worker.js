@@ -2,7 +2,7 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
 
-const TOKEN = "6993500514:AAEQjZG8x6LpXE7QrJanFcOix5vvDZeTnP8";
+const TOKEN = "6993500514:AAEBryu-rDgD4DPkSncDnTsuSJ-JwR3pAcY";
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TOKEN}`;
 const REFERRAL_KEYWORDS = ["ref", "joinchat", "invite", "claim", "airdrop", "t.me"];
 
